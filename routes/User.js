@@ -20,7 +20,7 @@ router.post('/user/edit/:userID',User.editInfo)
 
 
 
-router.post('/recover/:userID/:code',User.resetPassword)
+router.post('/password/:userID/:code',User.resetPassword)
 
 router.post('/login',passport.authenticate('local'),User.login)
 

@@ -13,6 +13,8 @@ const User = require('./models/User')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload')
+const dotenv = require('dotenv');
+dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,14 +35,17 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-const dbPath = 'mongodb://localhost/ExpressBoxDB'
-const options = {useNewUrlParser: true, useUnifiedTopology: true}
+const dbPath = process.env.DB_URL || 'mongodb://localhost:27017/ExpressBox'
+const options = { useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false}
 const mongo = mongoose.connect(dbPath, options);
 
 mongo.then(() => {
     console.log('DB Connected');
 }, err => {
-    console.log(error);
+    console.log(err);
 })
 
 
@@ -55,6 +60,7 @@ app.use((err, req, res, next) => {
     res.status(400).send(err)
 })
 
+const port = process.env.PORT || 5000
 
  
-app.listen(5000)
+app.listen(port)

@@ -4,42 +4,46 @@ const generateUniqueId = require('generate-unique-id')
 const jwt = require('jsonwebtoken');
 const passport = require('passport')
 const nodemailer = require("nodemailer");
+const dotenv = require('dotenv');
+dotenv.config();
+
+
 
 let mailTransport = nodemailer.createTransport({
     service:'Gmail',
     auth : {
-        user : 'joseangel19.lol@gmail.com',
-        pass : 'mail keyboard31'
+        user : process.env.EMAIL,
+        pass :  process.env.EMAIL_PWD
     }
 })
 
-
-
-const accessTokenSecret = '12secret12' //ENV 
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET 
 
 module.exports.register = async (req,res,next) => {
     const user = new User({...req.body})
-
-    try{
-        if(req.body.status === 'active'){
-            await User.register(user, req.body.password)
-            res.send('Usuario registrado exitosamente')
-        }else{
-            let codeID = generateUniqueId({length:10})
-            const code = new Code({
-            email: req.body.email,
-            code: codeID
-        })
+    user.status = 'active'
+    try{ 
         await User.register(user, req.body.password)
-        await code.save()
-        await mailTransport.sendMail({
-            from: 'joseangel19.lol@gmail.com', 
-            to: req.body.email, 
-            subject: "Sucre Express - Enlace de activación", 
-            text: `Gracias por confiar en nuestros servicios, tu link de activacion es el siguente: http://localhost:3000/register/${req.body.id}/${codeID}`,
-        })
-        res.send('Usuario registrado exitosamente, revisa tu correo para activar tu cuenta')
-        }
+        res.send('Usuario registrado exitosamente')
+
+        // if(req.body.status === 'active'){ --> FOR ACTIVATION WITH EMAIL 
+        //     await User.register(user, req.body.password)
+        //     res.send('Usuario registrado exitosamente')
+        // }else{
+        //     let codeID = generateUniqueId({length:10})
+        //     const code = new Code({
+        //     email: req.body.email,
+        //     code: codeID
+        // })
+        // await User.register(user, req.body.password)
+        // await code.save()
+        // await mailTransport.sendMail({
+        //     from: process.env.EMAIL, 
+        //     to: req.body.email, 
+        //     subject: "Sucre Express - Enlace de activación", 
+        //     text: `Gracias por confiar en nuestros servicios, tu link de activacion es el siguente: ${process.env.DOMAIN_NAME}/register/${req.body.id}/${codeID}`,
+        // })
+
     }catch(err){
         next(err)
     }
@@ -107,26 +111,21 @@ module.exports.recoverPassword = async (req,res,next) =>{
         await code.save()
 
         await mailTransport.sendMail({
-            from: 'joseangel19.lol@gmail.com', 
+            from: process.env.EMAIL, 
             to: req.body.email, 
             subject: "Sucre Express - Recuperación de password", 
-            text: `Gracias por confiar en nuestros servicios, aquí tienes tu link para recuperar tu password http://localhost:3000/recover/${user.id}/${code.code} `,
+            text: `Gracias por confiar en nuestros servicios, aquí tienes tu link para recuperar tu password ${process.env.CLIENT_URL}/recover/${user.id}/${code.code} `,
         })
         res.send('Hemos enviado un correo con tu nombre de usuario')
         
     }catch(err){
         next(err)
     }
-    
-
-
-
-
 }
 
 module.exports.resetPassword = async (req,res,next) =>{
     const { userID, code } = req.params;
-    const pwd = req.body.pwd
+    const pwd = req.body.newPassword
     try{
         const user = await User.findOne({id:userID})
         const codeValid = await Code.findOneAndDelete({code})
