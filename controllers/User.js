@@ -24,7 +24,7 @@ module.exports.register = async (req,res,next) => {
     user.status = 'active'
     try{ 
         await User.register(user, req.body.password)
-        res.send('Usuario registrado exitosamente')
+        res.send('Usuario registrado exitosamente,ya puedes iniciar sesión')
 
         // if(req.body.status === 'active'){ --> FOR ACTIVATION WITH EMAIL 
         //     await User.register(user, req.body.password)

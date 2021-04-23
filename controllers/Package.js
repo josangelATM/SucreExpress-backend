@@ -17,7 +17,6 @@ module.exports.add = async (req,res,next) => {
         }
         await package.save()
         res.send('Paquete registrado')
-
     }catch(err){
         next(err)
     }
