@@ -1,0 +1,83 @@
+[
+  {
+    "firstName": "Rita",
+    "lastName": "Snow",
+    "username": "Rita12",
+    "email": "ritasnow@pathways.com",
+    "phoneNumber":"65425209",
+    "type": "admin",
+    "id": "1235631-PN"
+  },
+  {
+    "firstName": "Leo",
+    "lastName": "Messi",
+    "username": "Messientobien",
+    "email": "messi@pathways.com",
+    "phoneNumber":"654541409",
+    "type": "admin",
+    "id": "1235331-PN"
+  },
+  {
+    "firstName": "Tauro",
+    "lastName": "De Acuario",
+    "username": "Loscaballerros",
+    "email": "Delsodiaco@pathways.com",
+    "phoneNumber":"61452489",
+    "type": "customer",
+    "id": "1235231-PN"
+  },
+  {
+  "firstName": "Geminis",
+  "lastName": "Misognia",
+  "username": "VicoC5sep",
+  "email": "septemberfive@pathways.com",
+  "phoneNumber":"68343258",
+  "type": "customer",
+  "id": "2235631-PN"
+  },
+  {
+  "firstName": "KickAss",
+  "lastName": "Demony",
+  "username": "TorretoDiesel",
+  "email": "VenDiesil99@pathways.com",
+  "phoneNumber":"68584061",
+  "type": "customer",
+  "id": "1235636-PN"
+  },
+  {  
+  "firstName": "Mikasa",
+  "lastName": "exploration",
+  "username": "DevuelvemeAMichica",
+  "email": "HombresG@pathways.com",
+  "phoneNumber":"67489571",
+  "type": "customer",
+  "id": "1635631-PN"
+  },
+  {  
+  "firstName": "Chikichima",
+  "lastName": "AuchEsotuvoQueDoler",
+  "username": "ThewalkingDead",
+  "email": "RickGrames21@pathways.com",
+  "phoneNumber":"66485241",
+  "type": "customer",
+  "id": "3635631-PN"
+  },
+  {  
+  "firstName": "Escenapost",
+  "lastName": "Credito1",
+  "username": "Redsocial1221",
+  "email": "Wait4morevideos@pathways.com",
+  "phoneNumber":"61406784",
+  "type": "customer",
+  "id": "1375631-PN"
+  },
+  {
+  "firstName": "Open",
+  "lastName": "English",
+  "username": "OpenEnglish21",
+  "email": "OpenEnglish@pathways.com",
+  "phoneNumber":"67475264",
+  "type": "customer",
+  "id": "1375677-PN"
+  }
+]

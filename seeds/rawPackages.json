@@ -1,0 +1,123 @@
+[
+  {
+    "source": "Amazon",
+    "customerID": "2235631-PN",
+    "tracking":"AB230582",
+    "weight": 5
+  },
+  {
+    "source": "AliExpress", 
+    "customerID": "2235631-PN",
+    "tracking":"XY230582",
+    "weight": 10
+  },
+  {
+  "source": "AliExpress", 
+  "customerID": "1235231-PN",
+  "tracking":"ABC15632",
+  "weight": 15
+  },
+  {
+  "source": "AliExpress", 
+  "customerID": "1235231-PN",
+  "tracking":"CD285192",
+  "weight": 5
+  },
+  {
+  "source": "Shein", 
+  "customerID": "1235636-PN",
+  "tracking":"BC1282941",
+  "weight": 1
+  },
+  {
+  "source": "Amazon", 
+  "customerID": "1235636-PN",
+  "tracking":"PG7184912",
+  "weight": 5
+  },
+  {
+  "source": "AliExpress", 
+  "customerID": "3635631-PN",
+  "tracking":"ZX00829784",
+  "weight": 3
+  },
+  {
+  "source": "Shein", 
+  "customerID": "3635631-PN",
+  "tracking":"JJ89301",
+  "weight": 2
+  },
+  {
+  "source": "Amazon", 
+  "customerID": "1635631-PN",
+  "tracking":"QW00877831",
+  "weight": 5
+
+  },
+  { 
+  "source": "Shein", 
+  "customerID": "1635631-PN",
+  "tracking":"KG93291784",
+  "weight": 2
+  },
+  {
+  "source": "AllXpress", 
+  "customerID": "1375677-PN",
+  "tracking":"RGB2759142",
+  "weight": 1
+  },
+  {
+  "source": "Amazon", 
+  "customerID": "1375677-PN",
+  "tracking":"LO7562841",
+  "weight": 20
+  },
+  {
+  "source": "Amazon", 
+  "customerID": "1375631-PN",
+  "tracking":"WW1839421",
+  "weight": 2
+  },
+  { 
+  "source": "Shein", 
+  "customerID": "1375631-PN",
+  "tracking":"TT1902841",
+  "weight": 15
+  },
+  {
+  "source": "AliExpress", 
+  "customerID": "1375631-PN",
+  "tracking":"AA19401283",
+  "weight": 1
+  },
+  {
+  "source": "Shein", 
+  "customerID": "3635631-PN",
+  "tracking":"ÑL1947102",
+  "weight": 1
+  },
+  {
+  "source": "Shein", 
+  "customerID": "3635631-PN",
+  "tracking":"BI1912749",
+  "weight": 1
+  },
+  {
+  "source": "Amazon", 
+  "customerID": "3635631-PN",
+  "tracking":"KI1284012",
+  "weight": 10
+  },
+  {
+  "source": "AliExpress", 
+  "customerID": "1235331-PN",
+  "tracking":"FA09281942",
+  "weight": 8
+  },
+  {
+  "source": "Shein", 
+  "customerID": "1235331-PN",
+  "tracking":"QZ19418204",
+  "weight": 9
+  }
+]
