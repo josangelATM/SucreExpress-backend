@@ -13,8 +13,11 @@ const User = require('./models/User')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload')
-const dotenv = require('dotenv');
-dotenv.config();
+
+if (process.env.NODE_ENV === 'development') {
+    require('dotenv').config();
+  }
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

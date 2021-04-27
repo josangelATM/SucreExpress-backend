@@ -62,32 +62,28 @@ module.exports.findPackage = async (req,res,next) => {
     try{
         switch(type){
             case 'ID':
-                packages = await Package.find({id:query})
-                res.send(packages)
+                packages = await Package.find({id:query}).populate('owner')
             break;
             case 'CustomerID':
-                packages = await Package.find({customerID:query})           
-                res.send(packages)
+                console.log('wtf')
+                packages = await Package.find({customerID:query}).populate('owner') 
             break;
             case 'Tracking':
-                packages = await Package.find({tracking:query})
+                packages = await Package.find({tracking:query}).populate('owner')  
                 if(packages.length === 0){
                     if(userType == 'customer'){
                         const filter = {tracking:query}
                         const update = {customerID:customerID,tracking:query,id:generateUniqueId({length:6, useLetters: false})}
                         const packageRequest = await PackageRequest.findOneAndUpdate(filter,update,{upsert: true})
                         res.send('Paquete actualmente en tránsito')
-                    }else{
-                        res.send(packages)
                     }
-                }else{
-                    res.send(packages)
                 }
-                
             break;
             default:
                 throw 'Tipo de búsqueda no soportada'
+            break;
         }
+        res.send(packages)
     }catch(err){
         next(err)
     }

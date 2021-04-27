@@ -21,6 +21,7 @@ router.post('/user/edit/:userID',User.editInfo)
 
 
 router.post('/password/:userID/:code',User.resetPassword)
+router.post('/password/:userID/',User.adminChangePassword)
 
 router.post('/login',passport.authenticate('local'),User.login)
 
