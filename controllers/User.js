@@ -161,6 +161,21 @@ module.exports.changePassword = async(req,res,next) =>{
     }
 }
 
+module.exports.adminChangePassword = async(req,res,next) =>{
+    const {newPassword} = req.body;
+    const {userID} = req.params;
+    try{
+        const user = await User.findOne({id:userID})
+        if(!user){
+            throw 'Usuario no existente'
+        }
+        await user.setPassword(newPassword)
+        res.send('Contraseña actualizada con éxito')
+    }catch(err){
+        next(err)
+    }
+}
+
 module.exports.editInfo = async (req,res,next) =>{
     const { userID } = req.params;
 

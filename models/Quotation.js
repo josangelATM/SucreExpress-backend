@@ -48,14 +48,15 @@ const Quotation = new Schema({
     },
     links:{
         type:[String],
-        default: ['NA']
+        required: true
     },
     status:{
         type:String,
         default: 'Pendiente'
     },
     contactMethod:{
-        type:String
+        type:String,
+        required: true
     }
 },{timestamps : true});
 

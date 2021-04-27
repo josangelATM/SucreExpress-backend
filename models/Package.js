@@ -30,7 +30,20 @@ const Package = new Schema({
     arrivalDate:{
         type: Date,
         default: null
+    },
+    comments:{
+        type: String
     }
 },{timestamps : true});
+
+Package.virtual('owner',{
+    ref: 'User',
+    localField: 'customerID',
+    foreignField: 'id',
+    justOne: true
+})
+
+Package.set('toObject', { virtuals: true });
+Package.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('Package', Package)
