@@ -76,7 +76,6 @@ module.exports.sendActivation = async (req,res,next) =>{
 }
 
 module.exports.login = async (req,res,next) => {
-    
     const accessToken = jwt.sign({ username: req.user.username}, accessTokenSecret, {
         expiresIn: '1h'
     })
@@ -170,6 +169,7 @@ module.exports.adminChangePassword = async(req,res,next) =>{
             throw 'Usuario no existente'
         }
         await user.setPassword(newPassword)
+        await user.save()
         res.send('Contraseña actualizada con éxito')
     }catch(err){
         next(err)
