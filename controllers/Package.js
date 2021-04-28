@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 
 
 module.exports.add = async (req,res,next) => {
+    console.log(req.body)
     req.body.id = generateUniqueId({length:6, useLetters: false})
     req.body.weight = req.body.weight === "" ? 'TBD' : req.body.weight
     const package = new Package(req.body)
