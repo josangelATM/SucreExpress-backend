@@ -16,7 +16,8 @@ const Package = new Schema({
     },
     tracking:{
         type: String,
-        required:true
+        required:true,
+        unique: true
     },
     weight:{
         type: String,
@@ -34,7 +35,7 @@ const Package = new Schema({
     comments:{
         type: String
     }
-},{timestamps : true});
+},{timestamps : true, strict: false});
 
 Package.virtual('owner',{
     ref: 'User',
