@@ -80,6 +80,9 @@ module.exports.findPackage = async (req,res,next) => {
                     }
                 }
             break;
+            case 'all':
+                packages = await Package.find({}).populate('owner')  
+            break;
             default:
                 throw 'Tipo de búsqueda no soportada'
             break;
