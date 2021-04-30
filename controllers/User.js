@@ -195,7 +195,13 @@ module.exports.findUsers = async (req,res,next) =>{
     try{
         let users = []
         if(limit){
-            users = await User.find({}).sort({createdAt:-1}).limit(parseInt(limit))
+            if(limit=='all'){
+                users = await User.find({})
+            }
+            else{
+                users = await User.find({}).sort({createdAt:-1}).limit(parseInt(limit))
+            }
+            
         }else{
             users = await User.find(querySearch)
         }
