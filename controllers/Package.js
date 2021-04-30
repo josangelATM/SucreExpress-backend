@@ -31,11 +31,13 @@ module.exports.update = async (req,res,next) => {
     }
     const packageID = req.params.packageID
     try{
-        const package = await Package.findOneAndUpdate({id:packageID},update)
+        const package = await Package.findOneAndUpdate({id:packageID},update,{
+            new:true
+        })
         if(!package){
             throw 'Paquete no existente'
         }
-        res.send('Paquete actualizado exitosamente')
+        res.send(package)
     }catch(err){
         next(err)
     }
