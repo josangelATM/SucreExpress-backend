@@ -55,7 +55,7 @@ mongo.then(() => {
 app.use('/users', userRoutes)
 app.use('/packages', packageRoutes)
 app.use('/packageRequests', packageRequestRoutes)
-app.use('/quotation', quotationRoutes)
+app.use('/quotations', quotationRoutes)
 app.use('/bills',billRoutes)
 
 app.use((err, req, res, next) => {
@@ -66,4 +66,4 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 5000
 
  
-app.listen(port)
+app.listen(port,'192.168.0.102')
