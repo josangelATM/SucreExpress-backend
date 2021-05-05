@@ -66,4 +66,4 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 5000
 
  
-app.listen(port,'192.168.0.102')
+app.listen(port)
