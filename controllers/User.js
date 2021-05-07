@@ -4,18 +4,24 @@ const generateUniqueId = require('generate-unique-id')
 const jwt = require('jsonwebtoken');
 const passport = require('passport')
 const nodemailer = require("nodemailer");
+const smtpTransport = require('nodemailer-smtp-transport');
 const dotenv = require('dotenv');
+
 dotenv.config();
 
-
-
-let mailTransport = nodemailer.createTransport({
-    service:'Gmail',
-    auth : {
+let mailTransport = nodemailer.createTransport(smtpTransport({
+    host:'mail.sucrexpresszl.com',
+    secureConnection: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    port: 465,
+    auth: {
         user : process.env.EMAIL,
         pass :  process.env.EMAIL_PWD
-    }
-})
+  }
+}));
+
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET 
 
@@ -23,7 +29,19 @@ module.exports.register = async (req,res,next) => {
     const user = new User({...req.body})
     user.status = 'active'
     try{ 
-        await User.register(user, req.body.password)
+        if(req.body.referredBy){
+            const referredUserBy = await User.findOne({id:req.body.referredBy})
+            if(!referredUserBy){
+            throw '# de casillero no existente.'
+            }
+            user.referredBy = referredUserBy.id
+            await User.register(user, req.body.password)
+            referredUserBy.referrals.push(user.id)
+            await referredUserBy.save()
+        }else{
+            await User.register(user, req.body.password)    
+        }
+        
         res.send('Usuario registrado exitosamente,ya puedes iniciar sesión')
 
         // if(req.body.status === 'active'){ --> FOR ACTIVATION WITH EMAIL 
@@ -80,6 +98,8 @@ module.exports.login = async (req,res,next) => {
         expiresIn: '1h'
     })
 
+    const hasReferrals = req.user.referrals && req.user.referrals.length > 0 ? true : false
+
     res.send({
         username:req.user.username,
         firstName:req.user.firstName,
@@ -88,6 +108,7 @@ module.exports.login = async (req,res,next) => {
         type: req.user.type,
         email:req.user.email,
         phoneNumber:req.user.phoneNumber,
+        hasReferrals,
         accessToken
     })
 }

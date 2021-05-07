@@ -1,12 +1,13 @@
 const Package = require('../models/Package')
-const User = require('../models/User')
 const PackageRequest = require('../models/PackageRequest')
+const User = require('../models/User')
 const generateUniqueId = require('generate-unique-id')
 const nodemailer = require("nodemailer");
 
 
+
 module.exports.add = async (req,res,next) => {
-    console.log(req.body)
+    
     req.body.id = generateUniqueId({length:6, useLetters: false})
     req.body.weight = req.body.weight === "" ? 'TBD' : req.body.weight
     const package = new Package(req.body)
@@ -17,6 +18,7 @@ module.exports.add = async (req,res,next) => {
             throw 'Código de cliente no válido'
         }
         await package.save()
+        await PackageRequest.deleteOne({tracking:package.tracking})
         res.send('Paquete registrado')
     }catch(err){
         next(err)
@@ -68,7 +70,6 @@ module.exports.findPackage = async (req,res,next) => {
                 packages = await Package.find({id:query}).populate('owner')
             break;
             case 'CustomerID':
-                console.log('wtf')
                 packages = await Package.find({customerID:query}).populate('owner') 
             break;
             case 'Tracking':
@@ -77,13 +78,23 @@ module.exports.findPackage = async (req,res,next) => {
                     if(userType == 'customer'){
                         const filter = {tracking:query}
                         const update = {customerID:customerID,tracking:query,id:generateUniqueId({length:6, useLetters: false})}
-                        const packageRequest = await PackageRequest.findOneAndUpdate(filter,update,{upsert: true})
+                        await PackageRequest.findOneAndUpdate(filter,update,{upsert: true})
                         res.send('Paquete actualmente en tránsito')
                     }
                 }
             break;
             case 'all':
                 packages = await Package.find({}).populate('owner')  
+            break;
+
+            case 'referrals':
+                const user = await User.findOne({id:query})
+                const referralsID = user.referrals
+                for(const refID of referralsID){
+                    
+                    packages.push(await Package.find({customerID:refID}).populate('owner'))
+                }
+                packages = packages.flat()
             break;
             default:
                 throw 'Tipo de búsqueda no soportada'
