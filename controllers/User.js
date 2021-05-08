@@ -199,9 +199,43 @@ module.exports.adminChangePassword = async(req,res,next) =>{
 
 module.exports.editInfo = async (req,res,next) =>{
     const { userID } = req.params;
-
     try {
-    const user = await User.findOneAndUpdate({id: userID},{...req.body},{new: true})    
+    let user = await User.findOne({id:userID})
+    console.log(user)
+    if(!user){
+        throw 'CustomerID no existente'
+    }
+    if(user.referredBy!=req.body.referredBy){ //Detect changes on referredBy 
+        if(user.referredBy==''){ // None referal to Referal 
+            const userRef = await User.findOne({id:req.body.referredBy})
+            if(!userRef){
+                throw 'CustomerID de referido no existente'
+            }
+            userRef.referrals.push(user.id)
+            await userRef.save()
+        }else if(!req.body.referredBy==''){
+            const newUserRef = await User.findOne({id:req.body.referredBy})
+            const oldUserRef = await User.findOne({id:user.referredBy})
+            if(!newUserRef && !oldUserRef ){
+                throw 'CustomerID de referido no existente'
+            }
+            newUserRef.referrals.push(user.id)
+            oldUserRef.referrals = oldUserRef.referrals.filter(item => item !== user.id)
+            await newUserRef.save()
+            await oldUserRef.save()
+        }else if(req.body.referredBy==''){
+            const userRef = await User.findOne({id:user.id})
+            if(!userRef){
+                throw 'CustomerID de referido no existente'
+            }
+            userRef.referrals = userRef.referrals.filter(item => item !== user.id)
+            await userRef.save()
+        }
+    
+    }
+    
+    const update = req.body
+    user = await User.findOne({id:userID},update,{new:true})
     res.send(user)
     } catch (error) {
         next(error)

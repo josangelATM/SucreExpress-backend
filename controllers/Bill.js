@@ -25,14 +25,14 @@ module.exports.add = async (req,res,next) =>{
 
 module.exports.find = async (req,res,next) => {
     const {query, type, limit} = req.query
-    console.log(query);
-    console.log(type);
     let querySearch = {}
     querySearch[type] = {'$regex': query,$options:'i'}
     try{
         let bills = []
         if(limit){
             bills = await Bill.find({}).sort({createdAt:-1}).limit(parseInt(limit))
+        }else if(type=='all'){
+            bills = await Bill.find({})
         }else{
             bills = await Bill.find(querySearch)
         }
