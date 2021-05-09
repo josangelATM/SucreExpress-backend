@@ -55,11 +55,14 @@ UserSchema.plugin(passportLocalMongoose)
 
 UserSchema.add({
     referredBy: {
-        type: String, required: false
+        type: String, required: false,default:''
     },
-    referrals: [
-        {type: String, ref: 'User', required: false}
-    ]
+    referrals: {
+        type:[
+            {type: String, ref: 'User', required: false}
+        ],
+        default:[]
+    }
 })
 
 module.exports = mongoose.model('User', UserSchema)

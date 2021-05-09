@@ -65,13 +65,20 @@ module.exports.findPackage = async (req,res,next) => {
     let { query,type, userType,customerID,initialDate,finalDate } = req.query;
     let packages = []
     try{
-        if(initialDate!=''){
+        if(initialDate!='' && initialDate){
+
+            initialDate = new Date(initialDate)
+            initialDate.setHours(initialDate.getHours() + 5)
+            initialDate = initialDate.toISOString()
             console.log(initialDate)
-            initialDate = new Date(initialDate).toISOString()
             if(finalDate!=''){
-                finalDate = new Date(finalDate).toISOString()
+                finalDate = new Date(finalDate)
+                finalDate.setHours(finalDate.getHours() + 5)
+                finalDate = finalDate.toISOString()
             }else{
-                finalDate = new Date(Date.now()).toISOString()
+                finalDate = new Date(Date.now())
+                finalDate.setHours(finalDate.getHours() + 5)
+                finalDate = finalDate.toISOString()
             }
             switch(type){
                 case 'ID':

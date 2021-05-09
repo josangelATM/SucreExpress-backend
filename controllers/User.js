@@ -1,26 +1,11 @@
 const User = require('../models/User')
 const Code = require('../models/Code')
+const MailSender = require('../mails/MailSender')
 const generateUniqueId = require('generate-unique-id')
 const jwt = require('jsonwebtoken');
-const passport = require('passport')
-const nodemailer = require("nodemailer");
-const smtpTransport = require('nodemailer-smtp-transport');
 const dotenv = require('dotenv');
 
 dotenv.config();
-
-let mailTransport = nodemailer.createTransport(smtpTransport({
-    host:'mail.sucrexpresszl.com',
-    secureConnection: false,
-    tls: {
-      rejectUnauthorized: false
-    },
-    port: 465,
-    auth: {
-        user : process.env.EMAIL,
-        pass :  process.env.EMAIL_PWD
-  }
-}));
 
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET 
@@ -39,28 +24,10 @@ module.exports.register = async (req,res,next) => {
             referredUserBy.referrals.push(user.id)
             await referredUserBy.save()
         }else{
-            await User.register(user, req.body.password)    
+            await User.register(user, req.body.password)
         }
-        
+        await MailSender.welcomeEmail(user.email,user.firstName,user.id,user.username,req.body.password)
         res.send('Usuario registrado exitosamente,ya puedes iniciar sesión')
-
-        // if(req.body.status === 'active'){ --> FOR ACTIVATION WITH EMAIL 
-        //     await User.register(user, req.body.password)
-        //     res.send('Usuario registrado exitosamente')
-        // }else{
-        //     let codeID = generateUniqueId({length:10})
-        //     const code = new Code({
-        //     email: req.body.email,
-        //     code: codeID
-        // })
-        // await User.register(user, req.body.password)
-        // await code.save()
-        // await mailTransport.sendMail({
-        //     from: process.env.EMAIL, 
-        //     to: req.body.email, 
-        //     subject: "Sucre Express - Enlace de activación", 
-        //     text: `Gracias por confiar en nuestros servicios, tu link de activacion es el siguente: ${process.env.DOMAIN_NAME}/register/${req.body.id}/${codeID}`,
-        // })
 
     }catch(err){
         next(err)
@@ -99,7 +66,7 @@ module.exports.login = async (req,res,next) => {
     })
 
     const hasReferrals = req.user.referrals && req.user.referrals.length > 0 ? true : false
-
+    
     res.send({
         username:req.user.username,
         firstName:req.user.firstName,
@@ -114,14 +81,11 @@ module.exports.login = async (req,res,next) => {
 }
 
 module.exports.recoverPassword = async (req,res,next) =>{
-    console.log(req.body)
+   
     try{
         const user = await User.findOne({email:req.body.email})
         if(!user){
             throw 'Correo no registrado'
-        }
-        if(user.status=='pending'){
-            throw 'Cuenta no verificada'
         }
         const code = new Code({
             email: req.body.email,
@@ -129,14 +93,9 @@ module.exports.recoverPassword = async (req,res,next) =>{
         })
 
         await code.save()
-
-        await mailTransport.sendMail({
-            from: process.env.EMAIL, 
-            to: req.body.email, 
-            subject: "Sucre Express - Recuperación de password", 
-            text: `Gracias por confiar en nuestros servicios, aquí tienes tu link para recuperar tu password ${process.env.CLIENT_URL}/recover/${user.id}/${code.code} `,
-        })
-        res.send('Hemos enviado un correo con tu nombre de usuario')
+        MailSender.passwordRecover(user.email,`${process.env.CLIENT_URL}/recover/${user.id}/${code.code}`)
+        
+        res.send('Hemos enviado un correo para que puedas cambiar tu contraseña')
         
     }catch(err){
         next(err)
@@ -201,7 +160,6 @@ module.exports.editInfo = async (req,res,next) =>{
     const { userID } = req.params;
     try {
     let user = await User.findOne({id:userID})
-    console.log(user)
     if(!user){
         throw 'CustomerID no existente'
     }
@@ -213,7 +171,7 @@ module.exports.editInfo = async (req,res,next) =>{
             }
             userRef.referrals.push(user.id)
             await userRef.save()
-        }else if(!req.body.referredBy==''){
+        }else if(!req.body.referredBy==''){ //Referal to other Referal 
             const newUserRef = await User.findOne({id:req.body.referredBy})
             const oldUserRef = await User.findOne({id:user.referredBy})
             if(!newUserRef && !oldUserRef ){
@@ -223,19 +181,19 @@ module.exports.editInfo = async (req,res,next) =>{
             oldUserRef.referrals = oldUserRef.referrals.filter(item => item !== user.id)
             await newUserRef.save()
             await oldUserRef.save()
-        }else if(req.body.referredBy==''){
-            const userRef = await User.findOne({id:user.id})
+        }else if(req.body.referredBy==''){ //Referal to none referal. 
+            const userRef = await User.findOne({id:user.referredBy})
             if(!userRef){
                 throw 'CustomerID de referido no existente'
             }
-            userRef.referrals = userRef.referrals.filter(item => item !== user.id)
+            userRef.referrals = userRef.referrals.filter(item => item != user.id)
             await userRef.save()
         }
     
     }
     
     const update = req.body
-    user = await User.findOne({id:userID},update,{new:true})
+    user = await User.findOneAndUpdate({id:userID},update,{new:true})
     res.send(user)
     } catch (error) {
         next(error)
