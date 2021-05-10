@@ -64,13 +64,12 @@ module.exports.findById = async (req,res,next) => {
 module.exports.findPackage = async (req,res,next) => {
     let { query,type, userType,customerID,initialDate,finalDate } = req.query;
     let packages = []
-    try{
-        if(initialDate!='' && initialDate){
 
+    try{
+        if(initialDate!='' && initialDate && initialDate!='undefined'){
             initialDate = new Date(initialDate)
             initialDate.setHours(initialDate.getHours() + 5)
             initialDate = initialDate.toISOString()
-            console.log(initialDate)
             if(finalDate!=''){
                 finalDate = new Date(finalDate)
                 finalDate.setHours(finalDate.getHours() + 5)
@@ -103,7 +102,7 @@ module.exports.findPackage = async (req,res,next) => {
                             const filter = {tracking:query}
                             const update = {customerID:customerID,tracking:query,id:generateUniqueId({length:6, useLetters: false})}
                             await PackageRequest.findOneAndUpdate(filter,update,{upsert: true})
-                            res.send('Paquete actualmente en tránsito')
+                            packages = 'Paquete actualmente en tránsito'
                         }
                     }
                 break;
@@ -145,7 +144,7 @@ module.exports.findPackage = async (req,res,next) => {
                             const filter = {tracking:query}
                             const update = {customerID:customerID,tracking:query,id:generateUniqueId({length:6, useLetters: false})}
                             await PackageRequest.findOneAndUpdate(filter,update,{upsert: true})
-                            res.send('Paquete actualmente en tránsito')
+                            packages = 'Paquete actualmente en tránsito'
                         }
                     }
                 break;
@@ -168,9 +167,6 @@ module.exports.findPackage = async (req,res,next) => {
             }
         }
 
-
-
-        
         res.send(packages)
     }catch(err){
         next(err)
