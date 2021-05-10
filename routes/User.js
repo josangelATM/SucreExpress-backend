@@ -7,9 +7,14 @@ const passport = require('passport')
 router.get('/', User.findUsers)
 router.post('/password/', User.recoverPassword)
 
+router.route('/:userID')
+    .get(User.getByID)
+    .delete(User.deleteAccount)
+    .patch(User.editInfo)
 
-router.get('/:userID', User.getByID)
-router.patch('/:userID', User.editInfo)
+
+router.get('/:userID/reactive',User.reactiveAccount)
+
 router.patch('/:userID/password', User.changePassword)
 
 router.post('/register',User.register)

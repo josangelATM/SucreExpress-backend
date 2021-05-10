@@ -26,7 +26,7 @@ module.exports.register = async (req,res,next) => {
         }else{
             await User.register(user, req.body.password)
         }
-        await MailSender.welcomeEmail(user.email,user.firstName,user.id,user.username,req.body.password)
+        MailSender.welcomeEmail(user.email,user.firstName,user.id,user.username,req.body.password)
         res.send('Usuario registrado exitosamente,ya puedes iniciar sesión')
 
     }catch(err){
@@ -65,19 +65,27 @@ module.exports.login = async (req,res,next) => {
         expiresIn: '1h'
     })
 
-    const hasReferrals = req.user.referrals && req.user.referrals.length > 0 ? true : false
+    try {
+        if(req.user.status == 'deleted'){
+            throw 'Usuario o contraseña incorrecta'
+        }
+        const hasReferrals = req.user.referrals && req.user.referrals.length > 0 ? true : false
     
-    res.send({
-        username:req.user.username,
-        firstName:req.user.firstName,
-        lastName:req.user.lastName,
-        id: req.user.id,
-        type: req.user.type,
-        email:req.user.email,
-        phoneNumber:req.user.phoneNumber,
-        hasReferrals,
-        accessToken
-    })
+        res.send({
+            username:req.user.username,
+            firstName:req.user.firstName,
+            lastName:req.user.lastName,
+            id: req.user.id,
+            type: req.user.type,
+            email:req.user.email,
+            phoneNumber:req.user.phoneNumber,
+            hasReferrals,
+            accessToken
+        })
+    } catch (err) {
+        next(err)
+    }
+    
 }
 
 module.exports.recoverPassword = async (req,res,next) =>{
@@ -200,7 +208,6 @@ module.exports.editInfo = async (req,res,next) =>{
     }
 }
 
-
 module.exports.findUsers = async (req,res,next) =>{
     const {query, type, limit} = req.query
     let querySearch = {}
@@ -233,6 +240,37 @@ module.exports.getByID = async (req,res,next) => {
         }
         res.send(user)
     }catch(err){
+        next(err)
+    }
+}
+
+
+module.exports.deleteAccount = async (req,res,next) =>{
+    const { userID } = req.params;
+    try {
+        const user = await User.findOne({id:userID})
+        if(!user){
+            throw 'Customer ID no existente'
+        }
+        user.status = 'deleted'
+        await user.save()
+        res.send('Cuenta cambiada a status: Eliminada')
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.reactiveAccount = async(req,res,next) =>{
+    const { userID } = req.params;
+    try {
+        const user = await User.findOne({id:userID})
+        if(!user){
+            throw 'Customer ID no existente'
+        }
+        user.status = 'active'
+        await user.save()
+        res.send('Cuenta cambiada a status: Activa')
+    } catch (err) {
         next(err)
     }
 }
