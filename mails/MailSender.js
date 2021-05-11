@@ -12,8 +12,8 @@ module.exports.welcomeEmail = (sendTo,firstName,lastName,id,username,pwd) =>{
     message: {
       from: process.env.EMAIL
     },
-    send: false,
-    preview: true,
+    send: true,
+    preview: false,
     transport: {
         host: 'mail.sucrexpresszl.com',
         port: 465,
