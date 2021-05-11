@@ -6,7 +6,7 @@ const path = require('path');
 
 
 
-module.exports.welcomeEmail = (sendTo,firstName,id,username,pwd) =>{
+module.exports.welcomeEmail = (sendTo,firstName,lastName,id,username,pwd) =>{
 
   const email = new Email({
     message: {
@@ -36,6 +36,7 @@ module.exports.welcomeEmail = (sendTo,firstName,id,username,pwd) =>{
       },
       locals: {
         firstName,
+        lastName,
         id,
         username,
         pwd

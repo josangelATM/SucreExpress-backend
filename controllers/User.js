@@ -26,7 +26,7 @@ module.exports.register = async (req,res,next) => {
         }else{
             await User.register(user, req.body.password)
         }
-        MailSender.welcomeEmail(user.email,user.firstName,user.id,user.username,req.body.password)
+        MailSender.welcomeEmail(user.email,user.firstName,user.lastName,user.id,user.username,req.body.password)
         res.send('Usuario registrado exitosamente,ya puedes iniciar sesión')
 
     }catch(err){
