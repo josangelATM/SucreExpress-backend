@@ -62,9 +62,9 @@ module.exports.findById = async (req,res,next) => {
 }
 
 module.exports.findPackage = async (req,res,next) => {
-    let { query,type, userType,customerID,initialDate,finalDate } = req.query;
+    let { query,type, userType,customerID,initialDate,finalDate,sort } = req.query;
     let packages = []
-
+    sort = !sort ? 'desc' : sort 
     try{
         if(initialDate!='' && initialDate && initialDate!='undefined'){
             initialDate = new Date(initialDate)
@@ -84,19 +84,19 @@ module.exports.findPackage = async (req,res,next) => {
                     packages = await Package.find({id:query,updatedAt:{
                         $gte : initialDate,
                         $lt: finalDate
-                    }}).populate('owner')
+                    }}).populate('owner').sort({updatedAt:sort})
                 break;
                 case 'CustomerID':
                     packages = await Package.find({customerID:query,updatedAt:{
                         $gte : initialDate,
                         $lt: finalDate
-                    }}).populate('owner') 
+                    }}).populate('owner').sort({updatedAt:sort})
                 break;
                 case 'Tracking':
                     packages = await Package.find({tracking:query,updatedAt:{
                         $gte : initialDate,
                         $lt: finalDate
-                    }}).populate('owner')  
+                    }}).populate('owner').sort({updatedAt:sort})  
                     if(packages.length === 0){
                         if(userType == 'customer'){
                             const filter = {tracking:query}
@@ -110,7 +110,7 @@ module.exports.findPackage = async (req,res,next) => {
                     packages = await Package.find({updatedAt:{
                         $gte : initialDate,
                         $lt: finalDate
-                    }}).populate('owner')  
+                    }}).populate('owner').sort({updatedAt:sort}) 
                 break;
     
                 case 'referrals':
@@ -121,7 +121,7 @@ module.exports.findPackage = async (req,res,next) => {
                         packages.push(await Package.find({customerID:refID,updatedAt:{
                             $gte : initialDate,
                             $lt: finalDate
-                        }}).populate('owner'))
+                        }}).populate('owner')).sort({updatedAt:sort})
                     }
                     packages = packages.flat()
                 break;
@@ -132,13 +132,13 @@ module.exports.findPackage = async (req,res,next) => {
         }else{
             switch(type){
                 case 'ID':
-                    packages = await Package.find({id:query}).populate('owner')
+                    packages = await Package.find({id:query}).populate('owner').sort({updatedAt:sort})
                 break;
                 case 'CustomerID':
-                    packages = await Package.find({customerID:query}).populate('owner') 
+                    packages = await Package.find({customerID:query}).populate('owner').sort({updatedAt:sort})
                 break;
                 case 'Tracking':
-                    packages = await Package.find({tracking:query}).populate('owner')  
+                    packages = await Package.find({tracking:query}).populate('owner').sort({updatedAt:sort})  
                     if(packages.length === 0){
                         if(userType == 'customer'){
                             const filter = {tracking:query}
@@ -149,15 +149,14 @@ module.exports.findPackage = async (req,res,next) => {
                     }
                 break;
                 case 'all':
-                    packages = await Package.find({}).populate('owner')  
+                    packages = await Package.find({}).populate('owner').sort({updatedAt:sort})  
                 break;
     
                 case 'referrals':
                     const user = await User.findOne({id:query})
                     const referralsID = user.referrals
                     for(const refID of referralsID){
-                        
-                        packages.push(await Package.find({customerID:refID}).populate('owner'))
+                        packages.push(await Package.find({customerID:refID}).populate('owner').sort({updatedAt:sort}))
                     }
                     packages = packages.flat()
                 break;
