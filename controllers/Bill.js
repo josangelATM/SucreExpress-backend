@@ -6,15 +6,18 @@ const storage = new Storage({keyFilename:'./key.json'});
 
 
 module.exports.add = async (req,res,next) =>{
-    const { id, customerID,billNumber } = req.body;
+
+    const { id, customerID,billName } = req.body;
     const billFile = req.files.bill;
+    var chars = id.slice(0, id.search(/\d/));
+    var billNumber = id.replace(chars, '');
     try {
         const user = await User.findOne({id:customerID})
         if(!user){
             throw 'Código de cliente no válido'
         }
-        await storage.bucket('billsucre').upload(billFile.tempFilePath,{destination: billFile.name,})
-        const bill = new Bill({id,customerID,billLink:`https://storage.googleapis.com/billsucre/${billFile.name}`,billFileName:billFile.name,billNumber})
+        await storage.bucket('billsucre').upload(billFile.tempFilePath,{destination: billName,})
+        const bill = new Bill({id,customerID,billLink:`https://storage.googleapis.com/billsucre/${billName}`,billFileName:billName,billNumber})
         await bill.save()
         res.send('Factura guardada')
     } catch (err) {
