@@ -7,6 +7,9 @@ router.route('/')
     .post(Bill.add)
     .get(Bill.find)
 
+router.route('/lastID')
+    .get(Bill.getLastID)
+
 router.route('/:billID')
     .get(Bill.getBillLink)
     

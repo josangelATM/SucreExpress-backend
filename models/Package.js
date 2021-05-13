@@ -37,6 +37,14 @@ const Package = new Schema({
     }
 },{timestamps : true, strict: false});
 
+
+Package.add({
+    billID: {
+        type: String, required: false
+    }
+})
+
+
 Package.virtual('owner',{
     ref: 'User',
     localField: 'customerID',

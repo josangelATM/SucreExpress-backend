@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
+const autoIncrement = require('mongoose-auto-increment');
 const Bill = new Schema({
     billLink: {
         type: String,
@@ -21,5 +22,11 @@ const Bill = new Schema({
         required: true
     }
 },{timestamps : true});
+
+Bill.add({
+    billNumber: {
+        type: Number,required: true
+    }
+})
 
 module.exports = mongoose.model('Bill', Bill)
