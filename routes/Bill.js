@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const Bill = require('../controllers/Bill')
-
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 router.route('/')
     .post(Bill.add)
